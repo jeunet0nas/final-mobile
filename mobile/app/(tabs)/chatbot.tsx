@@ -65,6 +65,7 @@ const ChatbotScreen: React.FC = () => {
     currentSession,
     settings,
     setSettings,
+    createNewSession,
   } = useChatContext();
   const [error, setError] = useState<string | null>(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -120,23 +121,25 @@ const ChatbotScreen: React.FC = () => {
       "Xóa cuộc trò chuyện",
       user
         ? "Bạn có chắc muốn xóa cuộc trò chuyện này? Dữ liệu sẽ bị xóa vĩnh viễn khỏi tài khoản của bạn."
-        : "Bạn có chắc muốn xóa toàn bộ lịch sử trò chuyện trong phiên này?",
+        : "Bạn có chắc muốn xóa toàn bộ lịch sử trò chuyện trong phiên này? (Lưu ý: Ở chế độ khách, lịch sử không được lưu vào tài khoản)",
       [
         { text: "Hủy", style: "cancel" },
         {
           text: "Xóa",
           style: "destructive",
           onPress: async () => {
-            // ChatContext handles deletion
             if (user && currentSession) {
-              // Just close sidebar after deletion
+              // Logged in user - just close sidebar after deletion
               setIsSidebarOpen(false);
+            } else {
+              // Guest user - clear messages
+              await createNewSession();
             }
           },
         },
       ]
     );
-  }, [user, currentSession]);
+  }, [user, currentSession, createNewSession]);
 
   const handleRetry = useCallback(() => {
     // Lấy message cuối cùng của user
@@ -223,7 +226,7 @@ const ChatbotScreen: React.FC = () => {
                     ? "Đang trả lời..."
                     : user
                       ? "Lịch sử đã được lưu"
-                      : "Chế độ khách"}
+                      : "⚠️ Chế độ khách - Lịch sử không được lưu"}
               </Text>
             </View>
 
@@ -253,6 +256,21 @@ const ChatbotScreen: React.FC = () => {
 
       {/* Suggested Questions (show when chat is empty) */}
       {messages.length <= 1 && !isTyping && <SuggestedQuestions onPress={handleSend} />}
+
+      {/* Guest mode notice */}
+      {!user && messages.length <= 1 && (
+        <View className="mx-4 mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <View className="flex-row items-center mb-1">
+            <Ionicons name="information-circle" size={16} color="#D97706" />
+            <Text className="text-sm font-semibold text-amber-800 ml-2">
+              Đang ở chế độ khách
+            </Text>
+          </View>
+          <Text className="text-xs text-amber-700">
+            Bạn có thể sử dụng trợ lý AI mà không cần đăng nhập, nhưng lịch sử chat sẽ không được lưu. Đăng nhập để lưu lại các cuộc trò chuyện của bạn.
+          </Text>
+        </View>
+      )}
 
       <FlatList
         ref={flatListRef}

@@ -100,10 +100,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       loadSessions();
       loadLatestAnalysis();
     } else {
-      // Clear data on logout
+      // Guest mode - create temporary in-memory session
       setSessions([]);
+      setCurrentSessionId('guest-session');
       setMessages([]);
-      setCurrentSessionId(null);
       setLatestAnalysis(null);
     }
   }, [user?.uid]);
@@ -167,7 +167,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const createNewSession = async () => {
     if (!user) {
-      setError("Bạn cần đăng nhập để tạo cuộc trò chuyện mới");
+      // Guest mode - clear messages for new conversation
+      setMessages([]);
       return;
     }
 
@@ -311,35 +312,37 @@ Hãy sử dụng thông tin này để đưa ra tư vấn phù hợp với tình
       };
       setMessages((prev) => [...prev, botMessage]);
 
-      // Save messages to Firestore
-      await saveChatMessage(
-        {
-          sender: "user",
-          text: message,
-          timestamp: userMessage.timestamp.getTime(),
-          imageUrl: imageBase64,
-        },
-        currentSessionId
-      );
+      // Save messages to Firestore only if user is logged in
+      if (user && currentSessionId !== 'guest-session') {
+        await saveChatMessage(
+          {
+            sender: "user",
+            text: message,
+            timestamp: userMessage.timestamp.getTime(),
+            imageUrl: imageBase64,
+          },
+          currentSessionId
+        );
 
-      await saveChatMessage(
-        {
-          sender: "bot",
-          text: response.response.text,
-          timestamp: botMessage.timestamp.getTime(),
-          sources: response.response.sources,
-        },
-        currentSessionId
-      );
+        await saveChatMessage(
+          {
+            sender: "bot",
+            text: response.response.text,
+            timestamp: botMessage.timestamp.getTime(),
+            sources: response.response.sources,
+          },
+          currentSessionId
+        );
 
-      // Update session's last message
-      setSessions((prev) =>
-        prev.map((s) =>
-          s.id === currentSessionId
-            ? { ...s, lastMessage: message, updatedAt: Date.now() }
-            : s
-        )
-      );
+        // Update session's last message
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === currentSessionId
+              ? { ...s, lastMessage: message, updatedAt: Date.now() }
+              : s
+          )
+        );
+      }
     } catch (err) {
       setError(handleApiError(err));
       
