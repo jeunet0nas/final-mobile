@@ -1,0 +1,84 @@
+# Root .gitignore for DermaScan AI project
+
+# Local development configs (NEVER commit these)
+.github/
+.env
+.env.local
+.env.development
+.env.production
+*.env
+!*.env.example
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+*.js.map
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Firebase sensitive files
+firebase-adminsdk-*.json
+serviceAccountKey.json
+
+# IDE and editors
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Cache and temp
+.cache/
+tmp/
+temp/
+uploads/
+.expo/
+.expo-shared/
+
+# Mobile specific
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.kotlin/
+ios/
+android/
+.metro-health-check*
+
+# Package manager lock files (optional - remove if you want to commit them)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
