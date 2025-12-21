@@ -75,22 +75,27 @@ See `.env.example` for required environment variables.
 ### Base URL: `/api/v1`
 
 #### Analysis
+
 - `POST /analysis/scan` - Analyze skin image
 - `POST /analysis/compare` - Compare two skin images
 
 #### Skincare
+
 - `POST /skincare/direction` - Get skincare direction
 - `POST /skincare/routine` - Get personalized routine
 - `POST /skincare/coaching` - Get AI coaching advice
 
 #### Ingredient
+
 - `POST /ingredient/analyze` - Analyze product ingredients
 
 #### Knowledge Base
+
 - `POST /knowledge/ask` - Ask RAG-based questions
 - `GET /knowledge/condition/:name` - Get expert info
 
 #### Chat
+
 - `POST /chat/message` - Chat with AI assistant
 
 ## 🛡️ Security
