@@ -564,6 +564,4 @@ See EAS documentation for full build configuration details.
 Built with ❤️ using TypeScript, React Native, Node.js, Firebase, and Google Gemini
 
 For bug reports, feature requests, or contributions → Open a GitHub issue
-#   m o b i l e - f i n a l 
- 
- 
+#
